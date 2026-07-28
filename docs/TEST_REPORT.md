@@ -103,3 +103,9 @@ Os testes confirmam o fluxo operacional mínimo por serviços e rotas implementa
 - `tests/authorization_e2e.php`: approved (`AUTHORIZATION_E2E_OK`).
 - `tests/tournament_e2e.php`: approved (`TOURNAMENT_E2E_OK`); generated private PDF is local test output and was not staged.
 - `php database/seed.php --demo`: approved; seed now idempotently creates/reativates one `match_operator_assignments` record for `operador@example.com`, which is required by the HTTP navigation fixture.
+
+## Reconstruction final audit - 28/07/2026
+
+- Lint, `integration.php`, `authorization_e2e.php`, `sports_rules_e2e.php`, `rectification_e2e.php` and `accountability_e2e.php`: aprovados nesta execucao.
+- `public_portal_e2e.php`: reprovado. A suite esta acoplada ao portal generico anterior e a separacao parcial de views publicas ainda nao possui substituta HTTP. Este resultado bloqueia liberacao.
+- Nenhuma busca textual foi reclassificada como E2E: testes estruturais continuam insuficientes para provar jornada de usuario.
