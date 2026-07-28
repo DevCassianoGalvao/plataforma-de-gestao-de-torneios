@@ -10,8 +10,9 @@ use App\Controllers\TournamentOperationController;
 use App\Controllers\AccountabilityController;
 use App\Controllers\ProductNavigationController;
 use App\Controllers\AssistedManagementController;
+use App\Controllers\CompetitionManagementController;
 use App\Support\Router;
-$router=new Router(); $auth=new AuthController(); $admin=new AdminController(); $public=new PublicController(); $access=new AccessController(); $configuration=new TournamentConfigurationController(); $operation=new TournamentOperationController(); $accountability=new AccountabilityController(); $productNavigation=new ProductNavigationController(); $assistedManagement=new AssistedManagementController();
+$router=new Router(); $auth=new AuthController(); $admin=new AdminController(); $public=new PublicController(); $access=new AccessController(); $configuration=new TournamentConfigurationController(); $operation=new TournamentOperationController(); $accountability=new AccountabilityController(); $productNavigation=new ProductNavigationController(); $assistedManagement=new AssistedManagementController(); $competitionManagement=new CompetitionManagementController();
 $router->get('/', fn()=>App\Support\Security::redirect('/login'));
 $router->get('/login', fn()=> $auth->login()); $router->post('/login', fn()=> $auth->authenticate()); $router->get('/logout', fn()=> $auth->logout());
 $router->get('/senha/esqueci', fn()=> $auth->forgotPassword()); $router->post('/senha/esqueci', fn()=> $auth->requestPasswordReset()); $router->get('/senha/redefinir/{token}', fn($p)=> $auth->resetPasswordForm($p)); $router->post('/senha/redefinir', fn()=> $auth->resetPassword());
@@ -46,7 +47,8 @@ $router->get('/admin/partidas/atribuidas', fn()=> $productNavigation->assignedMa
 $router->get('/admin/partidas/{match}/operar', fn($p)=> $productNavigation->matchOperation($p));
 $router->get('/admin/partidas/{match}', fn($p)=> $productNavigation->matchDetail($p));
 $router->post('/admin/campeonatos/{championship}/{module}/salvar', fn($p)=>$assistedManagement->save($p));
-$router->get('/admin/campeonatos/{championship}/{module}', fn($p)=>in_array($p['module'],['equipes','atletas','comissao','responsaveis','inscricoes','documentos','configuracoes'],true)?$assistedManagement->page($p):$productNavigation->tournamentModule($p));
+$router->post('/admin/campeonatos/{championship}/{module}/competicao', fn($p)=>$competitionManagement->save($p));
+$router->get('/admin/campeonatos/{championship}/{module}', fn($p)=>in_array($p['module'],['equipes','atletas','comissao','responsaveis','inscricoes','documentos','configuracoes'],true)?$assistedManagement->page($p):(in_array($p['module'],['grupos','rodadas','partidas','classificacao','mata-mata'],true)?$competitionManagement->page($p):$productNavigation->tournamentModule($p)));
 $router->get('/admin/campeonatos/{championship}', fn($p)=>$productNavigation->tournament($p));
 $router->get('/admin/campeonatos/{championship}/{module}/{resource}', fn($p)=>$productNavigation->tournamentModule($p));
 foreach(['organizations','projects','tournaments','tournament_settings','tournament_themes','teams','team_tournament_entries','team_memberships','people','registrations','stages','venues','matches','match_events','match_reports','disciplinary_records','suspensions','news_posts','galleries','transfers','documents','awards'] as $entity) { $router->get('/admin/'.$entity, fn($p)=>$admin->index(['entity'=>$entity])); $router->get('/admin/'.$entity.'/{id}', fn($p)=>$admin->edit(['entity'=>$entity,'id'=>$p['id']])); $router->post('/admin/'.$entity.'/save', fn($p)=>$admin->save(['entity'=>$entity])); $router->post('/admin/'.$entity.'/delete', fn($p)=>$admin->delete(['entity'=>$entity])); }
