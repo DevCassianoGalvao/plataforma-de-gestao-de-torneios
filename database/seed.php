@@ -9,7 +9,7 @@ use App\Support\Database;
 
 if (!in_array('--demo', $argv, true)) { fwrite(STDERR,"Uso: php database/seed.php --demo\n"); exit(1); }
 $environment=strtolower((string)App\Support\Env::get('APP_ENV','development'));
-if ($environment==='production' || !in_array($environment,['local','development','testing','staging'],true) || ($environment==='staging' && getenv('DEMO_SEED_STAGING')!=='1')) { fwrite(STDERR,"Seed demo bloqueado no ambiente '$environment'.\n"); exit(1); }
+if ($environment==='production' || !in_array($environment,['local','development','testing','staging'],true) || ($environment==='staging' && App\Support\Env::get('DEMO_SEED_STAGING')!=='1')) { fwrite(STDERR,"Seed demo bloqueado no ambiente '$environment'.\n"); exit(1); }
 if (in_array('--fresh',$argv,true)) { fwrite(STDERR,"--fresh não é disponibilizado: o banco pode conter dados fora do namespace demo. Use banco descartável e migrations para recriação segura.\n"); exit(1); }
 
 final class DemoSeed {
