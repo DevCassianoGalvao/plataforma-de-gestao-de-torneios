@@ -136,5 +136,21 @@ Every administrative page must declare the active organization, project and cham
 
 - Login now uses ProductNavigationService::landing() instead of sending every role to generic CRUD.
 - Landing: superadmin global dashboard; project admin projects; organizer championship dashboard; team manager my team; operator assigned matches; communication content; auditor accountability.
-- 	ests/navigation_http_e2e.php performs HTTP login, CSRF, regenerated cookie, role redirects, scope checks, legacy denial, 404 and subdirectory checks.
+- `tests/navigation_http_e2e.php` performs HTTP login, CSRF, regenerated cookie, role redirects, scope checks, legacy denial, 404 and subdirectory checks.
 - Browser/mobile visual acceptance remains pending Stage 7.
+
+## Implementation mapping and status - 2026-07-27
+
+| Journey | Existing code support | Current gap before journey acceptance |
+|---|---|---|
+| Superadministrator | `ProductNavigationService::landing/menu`, `ProductNavigationController::global`, `AccessController`, `AuthPolicy::requireSuperAdmin` | Global routes render temporary summaries; named tenant/user/audit pages are not dedicated workflows. |
+| Project administrator | `ProductNavigationService::tournaments`, `ScopeService`, `ScopedRepository` | Project dashboard and team/report pages are shell routes, not list/detail/task pages. |
+| Organizer | `TournamentOperationService`, `ScheduleGenerationService`, `StandingsService`, `BracketService`, role modules | The menu reaches `admin/product-page.php`; teams through reports remain a legacy mega-screen or generic CRUD. |
+| Team manager | team-scoped `ProductNavigationService::tournaments`, `ScopeService`, `RegistrationValidationService` | Own roster/document/lineup task routes remain to be built. |
+| Match operator | `match_operator_assignments`, `ProductNavigationController::assignedMatches`, `TournamentOperationService`, `MatchEventService` | Assigned-match list exists; dedicated match center and live offline/error UX do not. |
+| Communication | role landing/menu plus editorial schema and `PublicPortalPresenter::content` | News/gallery/transfer editor and published preview are not dedicated routes. |
+| Accountability | `AccountabilityController`, `AccountabilityService`, `ExportService` | Tournament export endpoint exists; global reporting workspace, filter journey and job detail remain incomplete. |
+| Public visitor | `PublicController`, `PublicPortalPresenter`, `public/portal.php` | Generic page rendering, numeric detail IDs and `SELECT *` content query prevent public-portal completion. |
+
+Each row remains unchecked in implementation planning until a real user can finish it
+with server authorization, persisted data, failure states and browser evidence.

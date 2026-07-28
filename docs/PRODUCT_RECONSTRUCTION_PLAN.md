@@ -34,9 +34,9 @@ Migration: additive only.
 
 ## Stage 1 - Architecture and navigation
 
-- [x] Build one administrative shell with context switcher, role-aware menu and account controls.
-- [x] Add named domain routes and compatibility adapters from existing numeric/generic routes.
-- [x] Create global and championship dashboards as separate routes/pages.
+- [ ] Build one administrative shell with context switcher, role-aware menu and account controls.
+- [ ] Replace route-shell placeholders with named domain routes and compatibility adapters from existing numeric/generic routes.
+- [ ] Create global and championship dashboards as dedicated task pages.
 - [x] Remove mega screen as primary entry point; retain it as superadmin-only legacy interface during transition.
 
 Dependencies: Stage 0, `AuthPolicy`, `ScopeService`.
@@ -190,4 +190,61 @@ Migration: parallel test adoption; existing source checks may remain as fast str
 - No claim that the current source-check tests are browser E2E.
 
 
-Implementation evidence (2026-07-27): ProductNavigationController, ProductNavigationService, dmin/product-page.php, named /admin/campeonatos/{championship}/{module} routes, and 	ests/navigation_http_e2e.php. Temporary pages render scoped persisted summaries only; Stage 2 still owns internal forms and detail workflows.
+Implementation evidence (2026-07-27): `ProductNavigationController`, `ProductNavigationService`, `app/Views/admin/product-page.php`, named `/admin/campeonatos/{championship}/{module}` routes, and `tests/navigation_http_e2e.php`. Temporary pages render scoped persisted summaries only; Stage 2 still owns internal forms and detail workflows.
+
+## Review correction - 2026-07-27
+
+This section supersedes completion implications in the earlier stage headings. The
+navigation foundation is real, but it is deliberately not evidence that the product
+screens have been rebuilt.
+
+| Stage 1 deliverable | Status | Concrete evidence | Remaining acceptance evidence |
+|---|---|---|---|
+| [x] Role landing and server-side route gate | Completed foundation | `app/Services/ProductNavigationService.php`, `app/Controllers/ProductNavigationController.php`, `app/Controllers/AuthController.php`, routes 42-47 in `public/index.php`, and `tests/navigation_http_e2e.php` | HTTP suite proves redirects, 403/404 and championship scope. Browser navigation is still required by Stage 7. |
+| [x] Legacy operation removed from normal product entry | Completed transition guard | `ProductNavigationController::legacyOperation()` and `::legacyAction()` require superadmin before delegating to `TournamentOperationController`; `admin/tournament-operations.php` displays the legacy notice | Keep the route until each replacement mutation has browser and authorization coverage. |
+| [ ] Shared administrative shell with production account/context controls | Partial | `app/Views/admin/product-page.php` has a temporary shell only; `app/Views/layouts/base.php` still merely loads the old page views | A reusable shell/partials must wrap every administrative route, expose active organization/project/championship, and pass keyboard/mobile browser checks. |
+| [ ] Named domain screens and compatibility adapters | Partial | `/admin/campeonatos/{championship}/{module}` exists in `public/index.php`, but it renders the generic `admin/product-page.php`; the entity loop at route 48 still exposes `AdminController::index/edit/save/delete` | Every named module must acquire a dedicated controller/presenter/view and old entity URLs must be protected internal adapters or redirects. |
+| [ ] Global and championship dashboards | Partial | `ProductNavigationController::renderGlobal()` and `::renderTournament()` show scoped summaries; legacy `AdminController::dashboard()` and `TournamentOperationController::dashboard()` remain separate old screens | Action queues, persisted contextual metrics, permission-aware actions and browser acceptance are required before completion. |
+
+### Dependency-ordered executable backlog
+
+Every unchecked item below has an explicit acceptance condition, probable files and
+test class. It is the authoritative execution order; it does not change any backend
+service contract without a dedicated service-regression decision.
+
+1. **[ ] Stage 0.1: baseline evidence and fixture contract**
+   - Acceptance: all routes in `public/index.php` have a route inventory; a disposable database runs migrations plus `tests/demo_seed.php`; screenshots are generated outside Git.
+   - Probable files: `bin/clean-install.ps1`, `tests/`, `docs/REAL_E2E_TEST_PLAN.md`, route inventory script.
+   - Tests: clean-install execution, one authenticated HTTP exchange, browser startup smoke.
+2. **[ ] Stage 1.1: finish the shell and context**
+   - Acceptance: shared partials replace duplicated admin navigation in `admin/dashboard.php`, `admin/crud.php`, `admin/tournament-operations.php`, `admin/access-control.php` and `admin/accountability.php`; context comes from scoped persisted records.
+   - Probable files: `app/Views/layouts/base.php`, new admin partials, `ProductNavigationController`, `ProductNavigationService`, `public/assets/css/layout.css`, `public/assets/js/app.js`.
+   - Tests: role HTTP matrix plus Playwright desktop/mobile menu, focus and 403 checks.
+3. **[ ] Stage 2: assisted management**
+   - Acceptance: teams, athletes, staff, guardians, registrations and documents have dedicated list/detail/workflow routes; visible forms contain no free technical IDs or regulation JSON.
+   - Probable files: new management controllers/presenters/views; `AssistedAdministrationService`, `RegistrationValidationService`, `ScopedRepository`, `UploadService`.
+   - Tests: service regression; browser create/edit/review; cross-team and private-document denial.
+4. **[ ] Stage 3: competition administration**
+   - Acceptance: group, rounds, fixtures, standings and bracket pages consume `ScheduleGenerationService`, `StandingsService` and `BracketService` without template-side calculation or manual relation IDs.
+   - Probable files: new competition controller/presenter/views; `TournamentOperationService`; scoped query helpers.
+   - Tests: service schedule/bracket regression; browser preview/confirm; duplicate-generation and scope denial.
+5. **[ ] Stage 4A: match center**
+   - Acceptance: match detail, lineup, live event timeline and finish flow are dedicated routes; operators cannot select an unassigned match or manually type player IDs.
+   - Probable files: new operation controller/presenters/views; `TournamentOperationService`, `MatchEventService`, `DisciplineService`.
+   - Tests: browser lineup/event/finish; authorization; existing sports service regression.
+6. **[ ] Stage 4B: homologation, rectification and report**
+   - Acceptance: review checklist, immutable version comparison, authorized impact decision and version-labelled PDF work without the legacy mega screen.
+   - Probable files: new review/report controllers/views; `RectificationService`, `MatchReportService`, `PdfReportService`, `BracketService`.
+   - Tests: rectification transaction regression; browser homologation/rectification; private download checks.
+7. **[ ] Stage 5: public portal**
+   - Acceptance: public routes use separate presenters/templates for home, fixtures, standings, bracket, team, athlete and content detail; only explicit public DTO fields are delivered.
+   - Probable files: `PublicController`, `PublicPortalPresenter`, `app/Views/public/*`, `ThemeService`.
+   - Tests: browser public journeys, unpublished-content/IDOR/privacy tests and responsive screenshots.
+8. **[ ] Stage 6: CSS ownership migration**
+   - Acceptance: each selector has one loaded owner; legacy CSS is removed only after the migrated page's visual, keyboard and mobile checks pass.
+   - Probable files: `public/assets/css/*.css`, `app/Views/layouts/base.php`, selector map artifact.
+   - Tests: browser visual/a11y regression at 320, 375, 768, 1024, 1366, 1440 and 1920.
+9. **[ ] Stage 7: release evidence**
+   - Acceptance: `TEST_REPORT.md` distinguishes structural, service, HTTP and browser proof; CI retains failure artifacts outside Git; unsupported claims are reopened.
+   - Probable files: `tests/`, CI configuration, `docs/TEST_REPORT.md`.
+   - Tests: full clean installation, HTTP suite, Playwright suite, domain regression.

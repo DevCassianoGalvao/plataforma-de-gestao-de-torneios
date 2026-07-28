@@ -55,3 +55,22 @@ No new stylesheet may redefine `:root`, `body`, global theme variables or generi
 - Championship colors are validated server-side and applied only as scoped custom properties (`--champ-*`).
 - JavaScript toggles state classes/ARIA attributes; it must not build arbitrary style strings or control business authorization.
 - Confirmations attach to the submitted form/action consistently, not only an arbitrary nested button.
+
+## Measured selector evidence - 2026-07-27
+
+The following collisions were measured with `rg` on the files actually linked by
+`app/Views/layouts/base.php`; they are not hypothetical design-system risks.
+
+| Selector | Loaded owners | Required decision |
+|---|---|---|
+| `:root` | `app.css`, `layout.css`, `tokens.css` | `tokens.css` becomes the only raw/semantic token owner. |
+| `body` | `app.css`, `tokens.css`, `components.css`, `layout.css`, `foundation.css`, `dashboard.css` | `foundation.css` owns baseline; page files cannot reset it. |
+| `.button` | `app.css`, `components.css`, `dashboard.css`, `operation.css` | `components.css` owns variants; page files may only compose named variants. |
+| `.panel` | `app.css`, `components.css`, `layout.css`, `public-portal.css` | Split structural container from reusable component before a migrated page uses it. |
+| `.sidebar` | `app.css`, `layout.css` | `layout.css` owns shell/drawer behavior. |
+| `[data-theme="dark"]` | `app.css`, `themes.css`, `foundation.css` | `themes.css` owns variable values; foundation can consume but not redefine them. |
+
+`public/assets/js/app.js` is the only loaded interaction script. It owns no business
+authorization: server authorization remains in `AuthPolicy`, `ScopeService` and the
+controllers. Do not remove a legacy stylesheet until every route that relies on it
+has a browser screenshot and keyboard/mobile regression result.

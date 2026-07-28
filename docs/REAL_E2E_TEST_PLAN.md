@@ -58,3 +58,23 @@ The files below are useful regressions, but names ending in `_e2e.php` are not p
 ## Completion gate
 
 No reconstructed page is complete until a browser test exercises its primary task, an authorization test covers its mutation, and at least desktop/mobile screenshots show no critical overflow, focus or contrast issue.
+
+## Current proof boundary - 2026-07-27
+
+| Test | Verified mechanism | Correct label |
+|---|---|---|
+| `tests/navigation_http_e2e.php` | Opens a TCP socket with `stream_socket_client`, exchanges login cookies/CSRF, follows role redirects and checks 403/404 under `NAVIGATION_TEST_URL` | HTTP integration; no browser rendering proof. |
+| `tests/public_portal_e2e.php` | Instantiates `PublicController` and examines returned HTML | In-process controller integration. |
+| `tests/tournament_e2e.php`, `sports_rules_e2e.php`, `rectification_e2e.php`, `accountability_e2e.php`, `authorization_e2e.php` | Uses database records and services directly | Domain/service integration. |
+| `tests/dashboard_ui_e2e.php`, `management_ui_e2e.php`, `match_center_ui_e2e.php`, `public_ui_e2e.php`, `ui_foundation_e2e.php`, `ui_ux_audit_e2e.php` | Uses `file_get_contents()` and `str_contains()` on source files | Structural source checks. |
+| `tests/http_authenticated_e2e.php`, `security_e2e.php`, `clean_install_e2e.php` | Checks source/script fragments and helper behavior | Structural/security checks, not authenticated HTTP or clean installation execution. |
+
+### Test dependency order
+
+1. Disposable database/migration/fixture runner must exist before browser work.
+2. HTTP mutation/authorization tests must protect every new route before UI acceptance.
+3. Playwright workflow tests then prove the human flow by role and viewport.
+4. Visual/a11y screenshots become release evidence only after functional HTTP/browser assertions pass.
+
+Generated screenshots, videos, traces, PDFs, database dumps, uploads and test logs
+are CI artifacts or local evidence. They must remain excluded from Git.

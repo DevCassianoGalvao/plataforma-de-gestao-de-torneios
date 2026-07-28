@@ -105,3 +105,21 @@ Scope: codebase inspection only. No claim in this document is browser acceptance
 - Do not remove generic CRUD or legacy CSS until replacement routes have acceptance and regression coverage.
 - Do not change sports rules while service regression is failing or absent.
 - Do not pass raw public/private records to templates; use explicit presenters/view models.
+
+## Evidence cross-check - 2026-07-27
+
+This review was made against the checked-out branch, not prior checkbox claims.
+
+| Evidence category | Verified source | Finding and reconstruction implication |
+|---|---|---|
+| Registered routes | `public/index.php:14-52` | Auth, document, access, configuration, accountability, legacy operation, role-navigation, generic entity and public routes coexist. The `foreach` at line 48 still maps 23 entities to `AdminController`; it is compatibility surface, not product navigation. |
+| Controllers/templates | `app/Controllers/{Admin,Access,Accountability,Auth,Public,TournamentConfiguration,TournamentOperation,ProductNavigation}Controller.php`; `app/Views/admin/*`; `app/Views/public/portal.php` | `ProductNavigationController` is a role/scope gate and summary-shell adapter. `crud.php`, `tournament-operations.php` and `portal.php` remain the main generic/mega-screen templates to replace. |
+| Repositories | `app/Support/Repository.php`, `app/Support/ScopedRepository.php` | No domain-specific repositories exist. New read models need scoped query/presenter classes, not template SQL or a second generic repository. |
+| Reusable services | `TournamentOperationService`, `ScheduleGenerationService`, `StandingsService`, `BracketService`, `RegistrationValidationService`, `MatchEventService`, `RectificationService`, `MatchReportService`, `PdfReportService`, `ScopeService`, `UploadService`, `PublicPortalPresenter` | Keep their persisted contracts behind new UI controllers. `PublicPortalPresenter::content()` still has `SELECT *`, so it is not a complete public DTO boundary. |
+| CSS loaded | `app/Views/layouts/base.php` | Ten files load: `app.css`, `tokens.css`, `themes.css`, `layout.css`, `components.css`, `dashboard.css`, `management.css`, `public-portal.css`, `foundation.css`, `operation.css`. `:root` occurs in 3, `body` in 6, `.button` in 4 and `.panel` in 4. |
+| JavaScript loaded | `public/assets/js/app.js` | Theme, drawer, confirmation, password, loading, view toggle and team filter exist. Confirmation listens to form `data-confirm`, while a legacy status action puts it on a nested button in `tournament-operations.php`. |
+| Exposed technical UI | `admin/crud.php`, `admin/upload-document.php`, `admin/access-control.php`, `admin/tournament-configuration.php`, `admin/tournament-operations.php` | Free relation IDs and `settings_json` remain. Hidden IDs are acceptable only after a scoped human selector resolves the relation. |
+| Tests named E2E | `tests/*_e2e.php` | UI, clean-install and security files named in `REAL_E2E_TEST_PLAN.md` are structural/source checks; `navigation_http_e2e.php` is the current genuine socket HTTP suite. |
+
+No migration, service, seed, permission policy or portal data contract is changed by
+this documentation review.

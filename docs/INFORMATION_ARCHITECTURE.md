@@ -85,5 +85,26 @@ Use canonical stable URLs under `/campeonatos/{championshipSlug}`. Detail resour
 - ProductNavigationController owns global landing, championship modules, assigned matches and legacy-operation guard.
 - ProductNavigationService resolves persisted roles and permitted championships; menu visibility is not authorization.
 - public/index.php adds named product routes, including /admin/campeonatos/{championship}/{module}.
-- dmin/product-page.php renders breadcrumb, active championship context, responsive drawer markup and scoped summaries.
+- `app/Views/admin/product-page.php` renders breadcrumb, active championship context, responsive drawer markup and scoped summaries.
 - /admin/tournaments/{id}/operation and all action/report endpoints are temporary superadmin-only legacy routes.
+
+## Reality check - 2026-07-27
+
+A route is not proof that its destination is a finished product page.
+
+| Route family | Current controller/view | Product status |
+|---|---|---|
+| `/admin` and `/admin/{area}` | `ProductNavigationController::{home,global}` -> `admin/product-page.php` | Role-aware navigation foundation; generic summary shell only. |
+| `/admin/campeonatos/{championship}[/{module}[/{resource}]]` | `ProductNavigationController::{tournament,tournamentModule}` -> `admin/product-page.php` | Scoped route shell; module action/detail workflow remains absent. |
+| `/admin/{entity}` and mutations | `AdminController::{index,edit,save,delete}` -> `admin/crud.php` | Legacy generic CRUD; internal compatibility tool during replacement. |
+| `/admin/tournaments/{id}/operation/*` | guarded adapter -> `TournamentOperationController` -> `admin/tournament-operations.php` | Legacy mega-screen, not a finished operational UX. |
+| `/admin/tournaments/{id}/configuration` | `TournamentConfigurationController` -> `admin/tournament-configuration.php` | Persistence exists, but raw JSON configuration remains exposed. |
+| `/admin/access` | `AccessController` -> `admin/access-control.php` | Scope persistence exists, but numeric-ID workflow remains exposed. |
+| `/campeonatos/{slug}[/{page}[/{id}]]` | `PublicController` + `PublicPortalPresenter` -> `public/portal.php` | Public route exists, but one generic template and numeric detail identifiers remain. |
+
+### Required split points and dependencies
+
+- **Assisted management before competition:** `AssistedAdministrationService` and `RegistrationValidationService` back roster/document workflows before schedule and lineup work.
+- **Competition before live operation:** `ScheduleGenerationService`, `StandingsService` and `BracketService` establish fixture context before `TournamentOperationService` moves into a match center.
+- **Match center and report remain separate:** live events use `MatchEventService`; homologation, rectification and versioned reports use `RectificationService`, `MatchReportService` and `PdfReportService`.
+- **Public portal follows reviewed state:** `PublicPortalPresenter` needs page-specific public DTOs after management, competition and operation replacements; it must not copy private administration queries.
