@@ -22,6 +22,7 @@
 ## Rectification - 27/07/2026
 
 - `php tests/rectification_e2e.php`: approved (`RECTIFICATION_E2E_OK`). Covers immutable snapshot, request, approval, impact decision requirement and transactional application.
+- `php tests/tournament_e2e.php`: approved after normal homologation began creating immutable version snapshots.
 
 ## Advanced sports rules - 27/07/2026
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-07-27 - Versioned homologation snapshots
+
+- Normal homologation now writes integrity-hashed operational snapshots with active rules and PDF linkage.
+- Rectification comparison exposes score and event deltas; started knockout/champion impact remains explicitly blocked.
+
 ## 2026-07-27 - Advanced competition rules foundation
 
 - Added persisted substitution, shootout, card-cleanup and exceptional-lineup records.
