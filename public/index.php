@@ -19,6 +19,7 @@ $router->get('/admin/access', fn()=> $access->index()); $router->post('/admin/ac
 $router->get('/admin/tournaments/{id}/configuration', fn($p)=>$configuration->edit($p));$router->post('/admin/tournaments/{id}/rules',fn($p)=>$configuration->saveRules($p));$router->post('/admin/tournaments/{id}/assets',fn($p)=>$configuration->uploadAsset($p));
 $router->get('/admin/tournaments/{id}/operation',fn($p)=>$operation->dashboard($p));
 $router->get('/admin/tournaments/{id}/accountability',fn($p)=>$accountability->dashboard($p));$router->post('/admin/tournaments/{id}/accountability/export',fn($p)=>$accountability->export($p));
+$router->get('/admin/exports/{job}/download',fn($p)=>$accountability->download($p));
 $router->post('/admin/tournaments/{id}/operation/registrations',fn($p)=>$operation->register($p));
 $router->post('/admin/tournaments/{id}/operation/registrations/review',fn($p)=>$operation->review($p));
 $router->post('/admin/tournaments/{id}/operation/teams',fn($p)=>$operation->createTeam($p));
