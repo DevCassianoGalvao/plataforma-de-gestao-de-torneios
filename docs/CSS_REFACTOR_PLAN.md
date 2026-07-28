@@ -32,6 +32,13 @@ The divergence audit and source inspection identify overlapping ownership of roo
 
 No new stylesheet may redefine `:root`, `body`, global theme variables or generic `.button`, `.card`, `.panel`, `.sidebar` selectors already owned by earlier layers.
 
+## Consolidation executed - 2026-07-28
+
+- `app/Views/layouts/base.php` no longer loads `public/assets/css/app.css`. This removes the measured duplicate owners for `:root`, `body`, `.button`, `.panel`, `.sidebar` and the original public-shell rules from the rendered cascade.
+- `app.css` remains versioned but frozen as a rollback artifact. It was not deleted because browser regression evidence has not yet covered every legacy administrative route.
+- Active ownership is now: `tokens.css` for variables, `themes.css` for dark variables/status values, `foundation.css` for baseline/a11y, `layout.css` for shell/grid, `components.css` for reusable controls, and page files only for their scoped compositions.
+- `dashboard.css`, `management.css`, `operation.css` and `public-portal.css` remain loaded because their respective journeys still have incomplete migration acceptance. They must not redefine raw tokens or body styles.
+
 ## Audit work before CSS changes
 
 1. Generate selector-to-file report for every loaded stylesheet.

@@ -13,6 +13,10 @@ Esta camada atende painel administrativo denso e portal por campeonato sem copia
 - `foundation.css`: tipografia, foco e reduced motion.
 - `app.css` e `operation.css`: legado preservado durante a migracao visual.
 
+## Ownership ativo
+
+`app.css` foi removido da carga global em 2026-07-28 por duplicar tokens, body, sidebar, painel e botao. Ele continua no repositorio apenas como rollback documentado. A pilha ativa e deliberada: tokens, temas, fundacao, layout, componentes e folhas estritamente compostas por jornada.
+
 ## Tipografia e temas
 
 `Bricolage Grotesk` atende headings, numeros e placares; `Inter` atende tabelas, formularios e navegacao. Ambas possuem fallback seguro. Light usa superficie clara e cards brancos; dark usa camadas azul-petroleo, sem preto puro.
