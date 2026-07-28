@@ -16,7 +16,7 @@ Date: 27/07/2026
 ## Findings Reopened
 
 1. **Release blocker:** authenticated HTTP test is static source verification, not a real cookie/session/CSRF exchange. Login, logout, rate limiting, 403/404 and private-download behavior need browser/socket integration against a disposable database.
-2. **Release blocker:** full administrative flow is not usable end-to-end without technical gaps. Assisted team/athlete profiles, visual lineups, advanced match operations, penalty shootout and rectification UI remain incomplete.
+2. **Release blocker:** full administrative flow is not usable end-to-end without technical gaps. Assisted team, athlete, guardian, staff, visual lineup and HTML match-report flows now exist, but photo/document upload, complete editing, schedule wizard, administrative match decisions, penalty shootout and rectification UI remain incomplete.
 3. **Release blocker:** rectification does not automatically create a replacement PDF/version after an approved edit and does not provide a guided administrative bracket reconstruction.
 4. **High:** public portal has presenter-level privacy controls, but lacks sitemap, robots, social metadata, full content details, responsive browser evidence and complete bracket visualization.
 5. **High:** sports rules do not yet implement complete three-team mini-table, phase card reset, substitution windows, extra time or operational shootout flow.

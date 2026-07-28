@@ -21,8 +21,13 @@ $router->get('/admin/tournaments/{id}/operation',fn($p)=>$operation->dashboard($
 $router->get('/admin/tournaments/{id}/accountability',fn($p)=>$accountability->dashboard($p));$router->post('/admin/tournaments/{id}/accountability/export',fn($p)=>$accountability->export($p));
 $router->post('/admin/tournaments/{id}/operation/registrations',fn($p)=>$operation->register($p));
 $router->post('/admin/tournaments/{id}/operation/registrations/review',fn($p)=>$operation->review($p));
+$router->post('/admin/tournaments/{id}/operation/teams',fn($p)=>$operation->createTeam($p));
+$router->post('/admin/tournaments/{id}/operation/teams/status',fn($p)=>$operation->teamStatus($p));
+$router->post('/admin/tournaments/{id}/operation/athletes',fn($p)=>$operation->createAthlete($p));
+$router->post('/admin/tournaments/{id}/operation/staff',fn($p)=>$operation->createStaff($p));
 $router->post('/admin/tournaments/{id}/operation/groups',fn($p)=>$operation->group($p));
 $router->post('/admin/tournaments/{id}/operation/groups/assign',fn($p)=>$operation->assign($p));
+$router->post('/admin/tournaments/{id}/operation/groups/remove',fn($p)=>$operation->removeAssignment($p));
 $router->post('/admin/tournaments/{id}/operation/schedule',fn($p)=>$operation->schedule($p));
 $router->post('/admin/tournaments/{id}/operation/lineups',fn($p)=>$operation->lineup($p));
 $router->post('/admin/tournaments/{id}/operation/events',fn($p)=>$operation->event($p));
@@ -31,6 +36,7 @@ $router->post('/admin/tournaments/{id}/operation/homologate',fn($p)=>$operation-
 $router->post('/admin/tournaments/{id}/operation/rectify',fn($p)=>$operation->rectify($p));
 $router->post('/admin/tournaments/{id}/operation/knockout',fn($p)=>$operation->knockout($p));
 $router->get('/admin/tournaments/{id}/matches/{match}/report.pdf',fn($p)=>$operation->pdf($p));
+$router->get('/admin/tournaments/{id}/matches/{match}/report',fn($p)=>$operation->report($p));
 $router->get('/admin', fn()=> $admin->dashboard()); foreach(['organizations','projects','tournaments','tournament_settings','tournament_themes','teams','team_tournament_entries','team_memberships','people','registrations','stages','venues','matches','match_events','match_reports','disciplinary_records','suspensions','news_posts','galleries','transfers','documents','awards'] as $entity) { $router->get('/admin/'.$entity, fn($p)=>$admin->index(['entity'=>$entity])); $router->get('/admin/'.$entity.'/{id}', fn($p)=>$admin->edit(['entity'=>$entity,'id'=>$p['id']])); $router->post('/admin/'.$entity.'/save', fn($p)=>$admin->save(['entity'=>$entity])); $router->post('/admin/'.$entity.'/delete', fn($p)=>$admin->delete(['entity'=>$entity])); }
 $router->get('/campeonatos/{slug}', fn($p)=>$public->tournament($p));
 $router->get('/campeonatos/{slug}/{page}/{id}', fn($p)=>$public->detail($p));

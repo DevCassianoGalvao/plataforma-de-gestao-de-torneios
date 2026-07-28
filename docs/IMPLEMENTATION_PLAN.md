@@ -26,8 +26,9 @@
 
 ## Administrative assisted workflow - 27/07/2026
 
-- [x] Championship operational screen uses filtered selects and action forms for registrations, groups, schedule generation, events, finish, homologation and PDF; no manual IDs or lineup JSON in these primary flows.
-- [ ] Complete assisted team/athlete profile, visual lineup selection, report review and bracket visualization remain pending.
+- [x] Championship operational screen uses filtered selects and action forms for registrations, groups, schedule generation, visual lineups, match events, finish, homologation and PDF; no manual IDs or lineup JSON in primary flow.
+- [x] Assisted team, athlete and technical-staff creation derives project/tournament from persisted context; athlete-team mismatch is blocked server-side.
+- [ ] Photo/document upload, full athlete editing, operational match postponement/cancellation/W.O., schedule wizard with venues/days and bracket visualization remain pending.
 
 ## Authorization update - 27/07/2026
 

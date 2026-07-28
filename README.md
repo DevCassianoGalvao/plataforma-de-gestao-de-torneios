@@ -14,7 +14,7 @@ Em ambiente de desenvolvimento, execute `php database/seed.php --demo`. O seed c
 
 ## Fluxo operacional mínimo
 
-O painel inclui a rota `/admin/tournaments/{id}/operation` para inscrições, grupos, geração de agenda, escalações, eventos, finalização, homologação, retificação, quartas e PDFs. O fluxo é validado por `php tests/tournament_e2e.php`.
+O painel inclui a rota `/admin/tournaments/{id}/operation` para cadastro assistido de equipes, atletas, responsáveis e comissão, inscrições, grupos, geração de agenda, escalações visuais, eventos, revisão de súmula HTML, finalização, homologação, quartas e PDFs. O fluxo é validado por `php tests/admin_workflow_e2e.php` e `php tests/tournament_e2e.php`.
 
 Base PHP 8.2 + MySQL 8 para Apache/cPanel. Não usa framework de execução nem exige build.
 

@@ -1,5 +1,9 @@
 # Decisões Arquiteturais em Evolução
 
+## AD-019 - Cadastro administrativo assistido
+
+A URL do campeonato é a origem do escopo operacional. O cadastro de equipe deriva `project_id` do campeonato persistido e cria a inscrição transacionalmente. Atletas e comissão validam a participação da equipe no campeonato e criam vínculos/histórico. IDs submetidos escolhem registros; nunca definem escopo.
+
 ## AD-018 - Centralized scope authorization
 
 `ScopeService` resolves ownership from persisted resource relations. `ScopedRepository` filters generic CRUD reads and validates scope before writes/deletes. `AuthPolicy` applies named operational permissions and logs denied critical attempts. Match operators require a persisted match assignment or persisted team authorization; request IDs never define scope.

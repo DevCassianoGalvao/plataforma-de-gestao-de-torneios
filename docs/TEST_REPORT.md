@@ -29,7 +29,7 @@
 
 ## Assisted administrative workflow - 27/07/2026
 
-- `php tests/admin_workflow_e2e.php`: approved (`ADMIN_WORKFLOW_E2E_OK`). It guards against manual technical inputs and JSON lineup input in the central workflow and confirms controller CSRF/scope checks are present.
+- `php tests/admin_workflow_e2e.php`: approved (`ADMIN_WORKFLOW_E2E_OK`). It guards against manual technical inputs and JSON lineup input, verifies controller CSRF/scope checks, persists assisted team/athlete/staff creation and rejects registering an athlete into a different team.
 
 ## Authorization and scope - 27/07/2026
 

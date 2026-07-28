@@ -15,6 +15,7 @@ final class TournamentOperationService
     {
         $this->assertTournamentTeam($tournamentId, $teamId);
         $person=$this->one('SELECT id,birth_date FROM people WHERE id=? AND person_type="athlete" AND status="active" AND deleted_at IS NULL',[$personId],'Atleta inválido.');
+        if (!$this->scalar('SELECT COUNT(*) FROM team_memberships WHERE team_id=? AND person_id=? AND role="athlete" AND status="active" AND deleted_at IS NULL',[$teamId,$personId])) throw new RuntimeException('Atleta não pertence à equipe selecionada.');
         $rules=(new RuleConfigurationService($this->db))->active($tournamentId);
         $max=(int)($rules['registration']['max_players'] ?? $rules['roster']['max_registered_players'] ?? 30);
         $count=$this->scalar('SELECT COUNT(*) FROM registrations WHERE tournament_id=? AND team_id=? AND registration_type="athlete" AND status IN ("draft","submitted","under_review","pending","approved") AND deleted_at IS NULL',[$tournamentId,$teamId]);
@@ -49,6 +50,15 @@ final class TournamentOperationService
         if($this->scalar('SELECT COUNT(*) FROM group_team_assignments WHERE group_id=? AND deleted_at IS NULL',[$groupId]) >= (int)$g['max_teams']) throw new RuntimeException('Limite do grupo atingido.');
         if($this->scalar('SELECT COUNT(*) FROM group_team_assignments a JOIN groups_competition x ON x.id=a.group_id JOIN stages s ON s.id=x.stage_id WHERE s.tournament_id=? AND a.team_id=? AND a.deleted_at IS NULL',[(int)$g['tournament_id'],$teamId])) throw new RuntimeException('Equipe já distribuída em grupo.');
         $this->db->prepare('INSERT INTO group_team_assignments(group_id,team_id,display_order,status,created_at,updated_at) VALUES(?,?,?,"active",NOW(),NOW())')->execute([$groupId,$teamId,(int)$this->scalar('SELECT COALESCE(MAX(display_order),0)+1 FROM group_team_assignments WHERE group_id=?',[$groupId])]);
+    }
+
+    public function removeTeamFromGroup(int $groupId, int $teamId): void
+    {
+        $group=$this->one('SELECT g.id FROM groups_competition g WHERE g.id=? AND g.deleted_at IS NULL',[$groupId],'Grupo inválido.');
+        if ($this->scalar('SELECT COUNT(*) FROM matches WHERE group_id=? AND deleted_at IS NULL',[$groupId]) > 0) throw new RuntimeException('Não é possível alterar grupo com partidas geradas.');
+        $s=$this->db->prepare('UPDATE group_team_assignments SET deleted_at=NOW(),updated_at=NOW() WHERE group_id=? AND team_id=? AND deleted_at IS NULL');$s->execute([$group['id'],$teamId]);
+        if(!$s->rowCount()) throw new RuntimeException('Equipe não está neste grupo.');
+        AuditService::record('remove_group_team','groups_competition',$groupId,[],['team_id'=>$teamId]);
     }
 
     public function generateGroupMatches(int $groupId, ?string $startAt=null): array

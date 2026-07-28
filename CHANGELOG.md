@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-27 - Assisted administration expansion
+
+- Added championship dashboard shortcuts, assisted team, athlete, guardian and technical-staff creation.
+- Added visual lineup controls, HTML match-report review and guided group membership removal.
+- Blocked cross-team athlete registration at service level and expanded administrative workflow verification.
+
 ## 2026-07-27 - Final release audit
 
 - Added definitive release audit and reopened production-release claims unsupported by HTTP/UI/infrastructure evidence.
