@@ -255,3 +255,7 @@ service contract without a dedicated service-regression decision.
   - Acceptance: both resolve the persisted match, re-check `view` or `operate_match` through `AuthPolicy`/`ScopeService`, hide numeric identifiers from rendered content, and retain the legacy operation route as a superadmin-only fallback.
   - Files: `public/index.php`, `ProductNavigationController`, `admin/product-page.php`, `tests/navigation_http_e2e.php`.
   - Tests: real HTTP for assigned operator detail/operation 200 and communication operation 403 under `/copa-online`; `database/seed.php --demo` provides the required persisted operator assignment.
+# Atualizacao de execucao - Etapa 2
+
+- [x] Fluxos assistidos por campeonato para equipes, atletas, comissao, responsaveis, inscricoes, documentos e regulamento. Aceite: respostas HTTP autenticadas, CSRF e escopo por slug verificados em `tests/management_http_e2e.php`.
+- [ ] Criacao, edicao, ativacao e arquivamento globais de campeonatos. Aceite: substituir o acesso normal ao CRUD legado sem expor campos internos. Arquivos provaveis: `AssistedManagementController`, rotas administrativas e view de campeonatos. Esta pendencia impede considerar a Etapa 2 integralmente concluida.

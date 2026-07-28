@@ -55,3 +55,9 @@ Current generic CRUD is `AdminController` plus `app/Views/admin/crud.php`. It is
 The source string in `tests/admin_workflow_e2e.php` only proves that guided hidden
 fields occur in the template. It is not acceptance that a person can safely complete
 the workflow; Stage 2 onward requires browser interaction evidence.
+# Etapa 2 - Cadastros assistidos
+
+- [x] `teams` no fluxo do campeonato: `/admin/campeonatos/{slug}/equipes` usa `AssistedManagementController`, nomes e selects de categoria; o CRUD genérico continua apenas como legado administrativo.
+- [x] `people`, `team_memberships` e `legal_guardians`: telas `/atletas`, `/comissao` e `/responsaveis` resolvem equipe e atleta pelo escopo do campeonato, sem IDs livres fora dos valores persistidos em selects.
+- [x] `registrations` e `documents`: telas `/inscricoes` e `/documentos` usam serviços existentes, CSRF e persistência real. `020_assisted_document_metadata.sql` completa a validade documental sem apagar dados.
+- [ ] Listagens globais de campeonatos e a edição completa da identidade continuam na Etapa 2.1: a configuração estruturada por campeonato já está disponível em `/configuracoes`, mas a tela global de ciclo de vida ainda usa o legado.
