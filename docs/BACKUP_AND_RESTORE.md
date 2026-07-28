@@ -1,3 +1,5 @@
 # Backup and Restore
 
-Back up MySQL with `mysqldump`, `public/uploads-public` and `storage/private` to off-host encrypted storage. Rotate daily/weekly/monthly copies and test restore in a disposable database. Verify archive checksums and never store credentials or backup archives in the repository. Restore database first, then public/private files with their original relative paths.
+Use `bin/backup.ps1 -DatabaseName torneios -Destination D:\backups` only from a protected operator machine. It creates a database dump, public/private file archive and SHA-256 manifest. Copy the resulting directory to encrypted off-host storage; do not keep it below the web root.
+
+Use `bin/restore-backup.ps1` only for a disposable database name beginning `torneios_test_`. It refuses production-like names. Restore database first, validate checksums, then restore public/private paths from `files.zip`. Maintain daily, weekly and monthly rotation and record a restore test.
