@@ -26,6 +26,7 @@
 ## Advanced sports rules - 27/07/2026
 
 - `php tests/sports_rules_e2e.php`: approved (`SPORTS_RULES_E2E_OK`). Covers configured W.O., standings points, point penalty/revocation, yellow-card suspension, lineup block and suspension fulfillment.
+- After migration 019, the existing sports-rule regression and tournament workflow were rerun. Full advanced scenarios for mini-table, cleanup, substitutions and shootout remain pending and are not claimed as approved.
 
 ## Assisted administrative workflow - 27/07/2026
 

@@ -23,6 +23,7 @@
 
 - [x] Configurable points, W.O. score, active point penalties, basic direct head-to-head, card ledger, automatic suspension, fulfillment and lineup block are implemented and covered by `tests/sports_rules_e2e.php`.
 - [ ] Full three-team mini-table ordering, card reset by phase, substitution windows, extra time and operational penalty shootout remain pending.
+- [ ] Advanced rules execution is in progress: ordered mini-table, card cancellation/cleanup, substitution records, extra-time gate and shootout persistence were added in migration 019. Administrative controls and full scenario coverage remain pending.
 
 ## Administrative assisted workflow - 27/07/2026
 

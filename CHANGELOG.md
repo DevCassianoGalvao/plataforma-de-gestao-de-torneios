@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-27 - Advanced competition rules foundation
+
+- Added persisted substitution, shootout, card-cleanup and exceptional-lineup records.
+- Expanded configurable standings tie-breaks to rank tied groups through a mini-table.
+- Added card cancellation, card cleanup, substitution validation, extra-time gate and shootout winner calculation services.
+
 ## 2026-07-27 - Assisted administration expansion
 
 - Added championship dashboard shortcuts, assisted team, athlete, guardian and technical-staff creation.

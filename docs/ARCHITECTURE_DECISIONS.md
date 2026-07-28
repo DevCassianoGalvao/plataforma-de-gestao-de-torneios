@@ -1,5 +1,9 @@
 # Decisões Arquiteturais em Evolução
 
+## AD-020 - Eventos esportivos avançados persistidos
+
+Substituições, cobranças de pênalti, limpeza de cartões e autorizações excepcionais usam tabelas próprias. Gols de disputa não viram `match_events`, portanto não contaminam placar normal nem artilharia. Regras são lidas da versão ativa; não há constantes da Copa Brasil no serviço.
+
 ## AD-019 - Cadastro administrativo assistido
 
 A URL do campeonato é a origem do escopo operacional. O cadastro de equipe deriva `project_id` do campeonato persistido e cria a inscrição transacionalmente. Atletas e comissão validam a participação da equipe no campeonato e criam vínculos/histórico. IDs submetidos escolhem registros; nunca definem escopo.
