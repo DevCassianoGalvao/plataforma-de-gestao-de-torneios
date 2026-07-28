@@ -248,3 +248,10 @@ service contract without a dedicated service-regression decision.
    - Acceptance: `TEST_REPORT.md` distinguishes structural, service, HTTP and browser proof; CI retains failure artifacts outside Git; unsupported claims are reopened.
    - Probable files: `tests/`, CI configuration, `docs/TEST_REPORT.md`.
    - Tests: full clean installation, HTTP suite, Playwright suite, domain regression.
+
+### Stage 1 route evidence - 2026-07-28
+
+- [x] Add direct match detail and operation entry routes: `/admin/partidas/{match}` and `/admin/partidas/{match}/operar`.
+  - Acceptance: both resolve the persisted match, re-check `view` or `operate_match` through `AuthPolicy`/`ScopeService`, hide numeric identifiers from rendered content, and retain the legacy operation route as a superadmin-only fallback.
+  - Files: `public/index.php`, `ProductNavigationController`, `admin/product-page.php`, `tests/navigation_http_e2e.php`.
+  - Tests: real HTTP for assigned operator detail/operation 200 and communication operation 403 under `/copa-online`; `database/seed.php --demo` provides the required persisted operator assignment.

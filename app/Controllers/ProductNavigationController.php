@@ -5,6 +5,7 @@ namespace App\Controllers;
 
 use App\Policies\AuthPolicy;
 use App\Services\ProductNavigationService;
+use App\Services\ScopeService;
 use App\Support\Database;
 use App\Support\Security;
 use App\Support\View;
@@ -52,7 +53,29 @@ final class ProductNavigationController
         if (!$this->navigation()->allowsGlobal($user, 'partidas/atribuidas')) return $this->forbidden();
         $statement = Database::connection()->prepare('SELECT m.id,m.status,m.scheduled_at,h.name home_name,a.name away_name,t.name tournament_name,t.slug tournament_slug FROM match_operator_assignments x JOIN matches m ON m.id=x.match_id JOIN teams h ON h.id=m.home_team_id JOIN teams a ON a.id=m.away_team_id JOIN tournaments t ON t.id=m.tournament_id WHERE x.user_id=? AND x.status="active" AND x.deleted_at IS NULL AND m.deleted_at IS NULL ORDER BY m.scheduled_at');
         $statement->execute([(int) $user['id']]);
-        return View::render('admin/product-page', ['title'=>'Partidas atribuidas','user'=>$user,'navigation'=>$this->navigation()->menu($user),'module'=>['title'=>'Partidas atribuidas','description'=>'Partidas liberadas para sua operacao.','action'=>'Abrir central'],'records'=>$statement->fetchAll(),'breadcrumbs'=>[['label'=>'Administracao','href'=>'/admin'],['label'=>'Partidas atribuidas','href'=>null]]]);
+        $records = $statement->fetchAll();
+        foreach ($records as &$record) {
+            $matchId = (int) $record['id'];
+            unset($record['id']);
+            $record['match_href'] = '/admin/partidas/'.$matchId;
+            $record['operation_href'] = '/admin/partidas/'.$matchId.'/operar';
+        }
+        unset($record);
+        return View::render('admin/product-page', ['title'=>'Partidas atribuidas','user'=>$user,'navigation'=>$this->navigation()->menu($user),'module'=>['title'=>'Partidas atribuidas','description'=>'Partidas liberadas para sua operacao.','action'=>'Abrir central'],'records'=>$records,'breadcrumbs'=>[['label'=>'Administracao','href'=>'/admin'],['label'=>'Partidas atribuidas','href'=>null]]]);
+    }
+
+    public function matchDetail(array $params): string
+    {
+        $matchId = (int) $params['match'];
+        $user = AuthPolicy::requirePermission('view', 'matches', $matchId);
+        return $this->renderMatch($user, $matchId, false);
+    }
+
+    public function matchOperation(array $params): string
+    {
+        $matchId = (int) $params['match'];
+        $user = AuthPolicy::requirePermission('operate_match', 'matches', $matchId);
+        return $this->renderMatch($user, $matchId, true);
     }
 
     public function legacyOperation(array $params): string
@@ -116,6 +139,41 @@ final class ProductNavigationController
         $args = $module === 'dashboard' ? [$tournamentId,$tournamentId,$tournamentId] : [$tournamentId];
         $statement->execute($args);
         return $statement->fetchAll();
+    }
+
+    private function renderMatch(array $user, int $matchId, bool $operation): string
+    {
+        $statement = Database::connection()->prepare('SELECT m.status,m.scheduled_at,m.home_score,m.away_score,t.id tournament_id,t.name tournament_name,t.slug tournament_slug,h.name home_name,a.name away_name,s.name stage_name,r.name round_name FROM matches m JOIN tournaments t ON t.id=m.tournament_id JOIN teams h ON h.id=m.home_team_id JOIN teams a ON a.id=m.away_team_id LEFT JOIN stages s ON s.id=m.stage_id LEFT JOIN rounds r ON r.id=m.round_id WHERE m.id=? AND m.deleted_at IS NULL');
+        $statement->execute([$matchId]);
+        $match = $statement->fetch();
+        if (!$match) return $this->notFound();
+        $tournament = $this->navigation()->tournament($user, (string) $match['tournament_slug']);
+        if (!$tournament) return $this->notFound();
+        $match['detail_href'] = '/admin/partidas/'.$matchId;
+        $match['operation_href'] = '/admin/partidas/'.$matchId.'/operar';
+        $scopes = new ScopeService(Database::connection());
+        $canOperate = $scopes->allows((int) $user['id'], 'operate_match', $scopes->context('matches', $matchId));
+        $module = $operation ? 'central-da-partida' : 'partida';
+        if (!$this->navigation()->canUseTournamentModule($user, $tournament, $module)) return $this->forbidden();
+        $definition = $this->navigation()->module($module);
+        $breadcrumbs = [
+            ['label'=>'Campeonatos','href'=>'/admin/campeonatos'],
+            ['label'=>$tournament['name'],'href'=>'/admin/campeonatos/'.$tournament['slug']],
+            ['label'=>'Partidas','href'=>'/admin/campeonatos/'.$tournament['slug'].'/partidas'],
+            ['label'=>$operation ? 'Operar partida' : 'Detalhe da partida','href'=>null],
+        ];
+        return View::render('admin/product-page', [
+            'title'=>$definition['title'],
+            'user'=>$user,
+            'tournament'=>$tournament,
+            'navigation'=>$this->navigation()->menu($user, $tournament),
+            'module'=>$definition,
+            'records'=>[],
+            'match'=>$match,
+            'operation'=>$operation,
+            'canOperate'=>$canOperate,
+            'breadcrumbs'=>$breadcrumbs,
+        ]);
     }
 
     private function forbidden(): string { http_response_code(403); return View::render('errors/403',['title'=>'Acesso negado']); }

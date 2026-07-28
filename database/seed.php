@@ -20,6 +20,7 @@ final class DemoSeed {
         $this->say('criando usuários e permissões');$this->users();
         $this->say('criando equipes, atletas e comissão');$this->people();
         $this->say('criando inscrições, grupos e partidas');$this->competitions();
+        $this->say('atribuindo partida ao operador demo');$this->operatorAssignment();
         $this->say('criando conteúdo e arquivos fictícios');$this->content();
         $this->say('validando dados');$this->validate();$this->summary();
     }
@@ -57,6 +58,14 @@ final class DemoSeed {
         foreach($sets as $key=>$teams){$tid=$this->tournaments[$key];foreach($teams as $team){$this->upsert('team_tournament_entries',['tournament_id'=>$tid,'team_id'=>$team],['status'=>'approved']);foreach($this->teamPlayers[$team] as $n=>$person){$existing=$this->idWhere('registrations','tournament_id=? AND team_id=? AND person_id=? AND deleted_at IS NULL',[$tid,$team,$person]);if(!$existing)$existing=$this->insert('registrations',['tournament_id'=>$tid,'team_id'=>$team,'person_id'=>$person,'registration_type'=>'athlete','status'=>$n<15?'approved':(['draft','submitted','pending'][$n%3]),'shirt_number'=>(string)($n+1)]);}}}
         $this->buildTournament($this->tournaments['brasil'],['A'=>array_slice($sets['brasil'],0,5),'B'=>array_slice($sets['brasil'],5,5)],true);
         $this->buildTournament($this->tournaments['serra'],['A'=>$sets['serra']],false);
+    }
+    private function operatorAssignment(): void {
+        $userId=$this->id('users','email','operador@example.com');
+        $matchId=(int)$this->value('SELECT id FROM matches WHERE tournament_id=? AND deleted_at IS NULL ORDER BY scheduled_at,id LIMIT 1',[$this->tournaments['brasil']]);
+        if(!$matchId)throw new RuntimeException('Partida demo para operador ausente.');
+        $existing=(int)$this->value('SELECT id FROM match_operator_assignments WHERE user_id=? AND match_id=? LIMIT 1',[$userId,$matchId]);
+        if($existing){$this->db->prepare('UPDATE match_operator_assignments SET status="active",deleted_at=NULL,updated_at=NOW() WHERE id=?')->execute([$existing]);return;}
+        $this->insert('match_operator_assignments',['user_id'=>$userId,'match_id'=>$matchId,'status'=>'active']);
     }
     private function buildTournament(int $tid,array $groups,bool $knockout): void {
         $op=new TournamentOperationService($this->db);$existing=$this->count('matches','tournament_id=? AND deleted_at IS NULL',[$tid]);if($existing){if($knockout){$this->db->prepare('UPDATE matches m JOIN stages s ON s.id=m.stage_id SET m.home_penalties=5,m.away_penalties=4 WHERE m.tournament_id=? AND s.stage_key IN ("quarterfinal","semifinal","final") AND m.status="homologated" AND m.home_score=m.away_score')->execute([$tid]);if(!$this->count('stages','tournament_id=? AND stage_key="quarterfinal" AND deleted_at IS NULL',[$tid])){$q=$this->db->prepare('SELECT id FROM matches WHERE tournament_id=? AND group_id IS NOT NULL AND deleted_at IS NULL');$q->execute([$tid]);foreach($q->fetchAll(PDO::FETCH_COLUMN) as $match)$this->ensureHomologated($op,(int)$match);$quarters=$op->generateKnockout($tid);foreach($quarters as $q)$this->play($op,(int)$q,(int)$q%2);}}return;}$stage=$this->insert('stages',['tournament_id'=>$tid,'name'=>'Fase de grupos','stage_key'=>'group','stage_order'=>1,'status'=>'published']);$matchIds=[];foreach($groups as $code=>$teams){$gid=$op->createGroup($stage,'Grupo '.$code,$code,count($teams));foreach($teams as $team)$op->assignTeam($gid,$team);$matchIds=array_merge($matchIds,$op->generateGroupMatches($gid,'2026-08-01 09:00:00'));}$this->say('gerando eventos e homologações');foreach($matchIds as $index=>$match){if(!$knockout && $index>=6)break;$this->play($op,$match,$index);}if($knockout){foreach($matchIds as $match)$this->ensureHomologated($op,$match);$quarters=$op->generateKnockout($tid);foreach($quarters as $q)$this->play($op,$q,$q%2);}else{$this->db->prepare('UPDATE matches SET status="postponed" WHERE id=?')->execute([$matchIds[count($matchIds)-1]]);}

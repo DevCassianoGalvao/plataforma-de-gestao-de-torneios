@@ -181,3 +181,5 @@
 - Added championship context, breadcrumbs, module shells and scoped menu generation.
 - Removed legacy tournament operation from primary navigation and restricted its endpoints to superadministrator.
 - Added real HTTP navigation coverage with CSRF, sessions, roles, scopes, 403, 404 and /copa-online checks.
+- Added policy-guarded direct match detail and operation entry routes, with links that do not display match IDs.
+- Demo seed now includes a persisted operator-to-match assignment for navigation coverage.

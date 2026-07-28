@@ -42,6 +42,8 @@ $router->get('/admin/tournaments/{id}/matches/{match}/report',fn($p)=>$productNa
 $router->get('/admin', fn()=> $productNavigation->home());
 foreach(['visao-geral','organizacoes','projetos','campeonatos','equipes','usuarios','auditoria','configuracoes','conteudo','prestacao-de-contas','relatorios'] as $area) $router->get('/admin/'.$area, fn($p)=>$productNavigation->global(['area'=>$area]));
 $router->get('/admin/partidas/atribuidas', fn()=> $productNavigation->assignedMatches());
+$router->get('/admin/partidas/{match}/operar', fn($p)=> $productNavigation->matchOperation($p));
+$router->get('/admin/partidas/{match}', fn($p)=> $productNavigation->matchDetail($p));
 $router->get('/admin/campeonatos/{championship}', fn($p)=>$productNavigation->tournament($p));
 $router->get('/admin/campeonatos/{championship}/{module}', fn($p)=>$productNavigation->tournamentModule($p));
 $router->get('/admin/campeonatos/{championship}/{module}/{resource}', fn($p)=>$productNavigation->tournamentModule($p));

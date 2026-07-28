@@ -94,3 +94,12 @@ Os testes confirmam o fluxo operacional mínimo por serviços e rotas implementa
 - 	ests/navigation_http_e2e.php: passed (NAVIGATION_HTTP_E2E_OK) against temporary PHP server with APP_BASE_PATH=/copa-online.
 - Test uses real GET/POST, CSRF, regenerated sessions, role landing redirects, scoped 200, forbidden 403, legacy 403, 404, breadcrumbs and subdirectory links.
 - This is HTTP integration, not browser/mobile visual acceptance.
+
+## Navigation route extension - 28/07/2026
+
+- PHP lint for changed controller, view, routes and HTTP test: approved.
+- `tests/navigation_http_e2e.php`: approved (`NAVIGATION_HTTP_E2E_OK`) against a temporary PHP server with `APP_BASE_PATH=/copa-online`.
+- Verified real login/CSRF/session redirects and menus for seven profiles; organizer scope denial by changed championship slug; legacy 403 for communication and legacy notice for superadmin; assigned operator detail/operation routes; communication 403 for operation; 404 and mobile-drawer markup.
+- `tests/authorization_e2e.php`: approved (`AUTHORIZATION_E2E_OK`).
+- `tests/tournament_e2e.php`: approved (`TOURNAMENT_E2E_OK`); generated private PDF is local test output and was not staged.
+- `php database/seed.php --demo`: approved; seed now idempotently creates/reativates one `match_operator_assignments` record for `operador@example.com`, which is required by the HTTP navigation fixture.

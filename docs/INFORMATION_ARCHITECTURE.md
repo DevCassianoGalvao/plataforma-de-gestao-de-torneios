@@ -100,6 +100,7 @@ A route is not proof that its destination is a finished product page.
 | `/admin/tournaments/{id}/operation/*` | guarded adapter -> `TournamentOperationController` -> `admin/tournament-operations.php` | Legacy mega-screen, not a finished operational UX. |
 | `/admin/tournaments/{id}/configuration` | `TournamentConfigurationController` -> `admin/tournament-configuration.php` | Persistence exists, but raw JSON configuration remains exposed. |
 | `/admin/access` | `AccessController` -> `admin/access-control.php` | Scope persistence exists, but numeric-ID workflow remains exposed. |
+| `/admin/partidas/{match}` and `/admin/partidas/{match}/operar` | `ProductNavigationController::{matchDetail,matchOperation}` -> `admin/product-page.php` | Direct navigation entry with `AuthPolicy` resource permission and scoped match lookup; live controls remain a later match-center module. |
 | `/campeonatos/{slug}[/{page}[/{id}]]` | `PublicController` + `PublicPortalPresenter` -> `public/portal.php` | Public route exists, but one generic template and numeric detail identifiers remain. |
 
 ### Required split points and dependencies

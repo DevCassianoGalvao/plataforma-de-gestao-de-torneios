@@ -57,6 +57,12 @@ $sessions = [];
         $sessionCheck = httpRequest($host, $port, $basePath.'/admin', 'GET', '', $sessions[$email]['cookie']);
         assertNavigation($sessionCheck['status'] === 302 && str_contains($sessionCheck['location'], $expected), 'Session was not retained for '.$email.': '.$sessionCheck['status'].' '.$sessionCheck['location']);
     }
+$menuLabels = ['admin@example.com'=>'Organizacoes','projeto@example.com'=>'Projetos','organizador@example.com'=>'Equipes','treinador01@example.com'=>'Minha equipe','operador@example.com'=>'Partidas atribuidas','comunicacao@example.com'=>'Noticias','auditoria@example.com'=>'Indicadores'];
+foreach ($menuLabels as $email=>$label) {
+    $landingPath = (string) parse_url($sessions[$email]['location'], PHP_URL_PATH);
+    $page = httpRequest($host, $port, $landingPath, 'GET', '', $sessions[$email]['cookie']);
+    assertNavigation($page['status'] === 200 && str_contains($page['body'], $label), 'Profile menu missing expected label '.$label.' for '.$email.'.');
+}
 $organizer = $sessions['organizador@example.com'];
 $organizerPath = (string) parse_url($organizer['location'], PHP_URL_PATH);
 $organizerSlug = basename(rtrim($organizerPath, '/'));
@@ -67,8 +73,27 @@ assertNavigation(str_contains($context['body'], 'Campeonato ativo') && str_conta
 assertNavigation(str_contains($context['body'], $basePath.'/admin/campeonatos/'), 'Subdirectory base path missing from navigation.');
 $forbidden = httpRequest($host, $port, $basePath.'/admin/campeonatos/'.$organizerSlug.'/grupos', 'GET', '', $sessions['comunicacao@example.com']['cookie']);
 assertNavigation($forbidden['status'] === 403, 'Communication profile accessed protected competition module.');
+$otherTournament = $db->prepare('SELECT slug FROM tournaments WHERE id<>? AND deleted_at IS NULL ORDER BY id LIMIT 1');
+$otherTournament->execute([(int) $tournament['id']]);
+$otherSlug = (string) $otherTournament->fetchColumn();
+if ($otherSlug !== '') {
+    $outsideScope = httpRequest($host, $port, $basePath.'/admin/campeonatos/'.$otherSlug, 'GET', '', $organizer['cookie']);
+    assertNavigation($outsideScope['status'] === 404, 'Organizer accessed another championship by changing the slug.');
+}
 $legacy = httpRequest($host, $port, $basePath.'/admin/tournaments/'.$tournament['id'].'/operation', 'GET', '', $sessions['comunicacao@example.com']['cookie']);
 assertNavigation($legacy['status'] === 403, 'Legacy operation was not restricted to superadmin.');
+$legacyAdmin = httpRequest($host, $port, $basePath.'/admin/tournaments/'.$tournament['id'].'/operation', 'GET', '', $sessions['admin@example.com']['cookie']);
+assertNavigation($legacyAdmin['status'] === 200 && str_contains($legacyAdmin['body'], 'Interface legada em processo de substituicao'), 'Superadmin legacy notice unavailable.');
+$assigned = $db->prepare('SELECT m.id FROM match_operator_assignments a JOIN matches m ON m.id=a.match_id JOIN users u ON u.id=a.user_id WHERE u.email=? AND a.status="active" AND a.deleted_at IS NULL AND m.deleted_at IS NULL ORDER BY m.id LIMIT 1');
+$assigned->execute(['operador@example.com']);
+$assignedMatch = (int) $assigned->fetchColumn();
+assertNavigation($assignedMatch > 0, 'Demo operator assignment fixture missing.');
+$matchDetail = httpRequest($host, $port, $basePath.'/admin/partidas/'.$assignedMatch, 'GET', '', $sessions['operador@example.com']['cookie']);
+assertNavigation($matchDetail['status'] === 200 && str_contains($matchDetail['body'], 'Detalhe da partida'), 'Assigned match detail route unavailable.');
+$matchOperation = httpRequest($host, $port, $basePath.'/admin/partidas/'.$assignedMatch.'/operar', 'GET', '', $sessions['operador@example.com']['cookie']);
+assertNavigation($matchOperation['status'] === 200 && str_contains($matchOperation['body'], 'Central da partida'), 'Assigned match operation route unavailable.');
+$matchDenied = httpRequest($host, $port, $basePath.'/admin/partidas/'.$assignedMatch.'/operar', 'GET', '', $sessions['comunicacao@example.com']['cookie']);
+assertNavigation($matchDenied['status'] === 403, 'Unauthorized profile operated an assigned match.');
 $missing = httpRequest($host, $port, $basePath.'/admin/campeonatos/campeonato-inexistente', 'GET', '', $organizer['cookie']);
 assertNavigation($missing['status'] === 404, 'Unknown championship did not return 404.');
 assertNavigation(str_contains($context['body'], 'data-drawer') && str_contains($context['body'], 'data-drawer-toggle'), 'Mobile navigation structure missing.');

@@ -71,3 +71,12 @@ Checkboxes, migrations e serviços isolados não comprovam fluxo de produto. Um 
 ## AD-022 - Product navigation is route and scope based
 
 ProductNavigationController and ProductNavigationService own product navigation. Menus derive from persisted role assignments; direct requests are checked again by role/scope resolution. Championship context uses permitted persisted tournaments and friendly slugs. Legacy tournament operation, including action endpoints, is superadmin-only during migration.
+
+## AD-023 - Direct match navigation remains policy guarded
+
+`/admin/partidas/{match}` and `/admin/partidas/{match}/operar` are navigation
+entry points, not authority grants. `ProductNavigationController` first uses
+`AuthPolicy::requirePermission()` on the persisted match and then resolves its
+permitted tournament context. The detail and operation pages expose names/statuses
+but not the numeric match identifier. Legacy operation remains the temporary
+superadmin fallback until the dedicated match-center workflow replaces it.
