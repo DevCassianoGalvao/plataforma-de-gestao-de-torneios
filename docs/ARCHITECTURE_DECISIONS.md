@@ -66,3 +66,8 @@ Snapshots devem ser reconstruídos transacionalmente a partir de partidas válid
 
 ## AD-015 — Estado auditado prevalece sobre roadmap
 Checkboxes, migrations e serviços isolados não comprovam fluxo de produto. Um item só fica concluído com rota operacional, autorização no servidor, persistência, tratamento de falha e teste proporcional ao risco. A auditoria de 27/07/2026 reabriu itens entregues apenas como infraestrutura ou CRUD genérico.
+
+
+## AD-022 - Product navigation is route and scope based
+
+ProductNavigationController and ProductNavigationService own product navigation. Menus derive from persisted role assignments; direct requests are checked again by role/scope resolution. Championship context uses permitted persisted tournaments and friendly slugs. Legacy tournament operation, including action endpoints, is superadmin-only during migration.

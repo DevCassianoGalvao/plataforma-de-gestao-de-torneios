@@ -173,3 +173,11 @@
 
 - Headers de segurança, HSTS condicional e logs JSON com correlação.
 - Documentação de instalação, backup, segurança e LGPD.
+
+
+## Nao lancado - Product navigation foundation
+
+- Added role-based landing redirects and named administrative product routes.
+- Added championship context, breadcrumbs, module shells and scoped menu generation.
+- Removed legacy tournament operation from primary navigation and restricted its endpoints to superadministrator.
+- Added real HTTP navigation coverage with CSRF, sessions, roles, scopes, 403, 404 and /copa-online checks.

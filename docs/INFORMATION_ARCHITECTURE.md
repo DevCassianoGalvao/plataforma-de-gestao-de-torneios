@@ -78,3 +78,12 @@ Use canonical stable URLs under `/campeonatos/{championshipSlug}`. Detail resour
 | `/admin/tournaments/{id}/configuration` | Championship setup tabs | Redirect to setup page. |
 | `/campeonatos/{slug}/{page}` | Named public routes | Keep routing adapter; redirect known legacy pages. |
 | `/campeonatos/{slug}/{page}/{id}` | Public slug detail routes | Add lookup/redirect only when public slug exists. |
+
+
+## Implemented navigation foundation (2026-07-27)
+
+- ProductNavigationController owns global landing, championship modules, assigned matches and legacy-operation guard.
+- ProductNavigationService resolves persisted roles and permitted championships; menu visibility is not authorization.
+- public/index.php adds named product routes, including /admin/campeonatos/{championship}/{module}.
+- dmin/product-page.php renders breadcrumb, active championship context, responsive drawer markup and scoped summaries.
+- /admin/tournaments/{id}/operation and all action/report endpoints are temporary superadmin-only legacy routes.

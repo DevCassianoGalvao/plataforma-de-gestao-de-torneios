@@ -86,3 +86,11 @@
 ## Conclusão
 
 Os testes confirmam o fluxo operacional mínimo por serviços e rotas implementadas. Eles não comprovam todos os requisitos do PRD: interface assistida de cadastros, autorização em todo CRUD genérico, confronto direto, disciplina completa, reconstrução da chave após retificação e instalação limpa ainda requerem cobertura própria.
+
+
+## Product navigation foundation - 27/07/2026
+
+- Baseline regression passed before navigation changes: PHP lint plus integration, authorization, tournament, sports, rectification, accountability, public portal, security and structural UI checks.
+- 	ests/navigation_http_e2e.php: passed (NAVIGATION_HTTP_E2E_OK) against temporary PHP server with APP_BASE_PATH=/copa-online.
+- Test uses real GET/POST, CSRF, regenerated sessions, role landing redirects, scoped 200, forbidden 403, legacy 403, 404, breadcrumbs and subdirectory links.
+- This is HTTP integration, not browser/mobile visual acceptance.

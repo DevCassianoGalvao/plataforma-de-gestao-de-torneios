@@ -34,10 +34,10 @@ Migration: additive only.
 
 ## Stage 1 - Architecture and navigation
 
-- [ ] Build one administrative shell with context switcher, role-aware menu and account controls.
-- [ ] Add named domain routes and compatibility redirects from existing numeric/generic routes.
-- [ ] Create global and championship dashboards as separate pages.
-- [ ] Remove mega screen as primary entry point; link its capabilities to separate destinations during transition.
+- [x] Build one administrative shell with context switcher, role-aware menu and account controls.
+- [x] Add named domain routes and compatibility adapters from existing numeric/generic routes.
+- [x] Create global and championship dashboards as separate routes/pages.
+- [x] Remove mega screen as primary entry point; retain it as superadmin-only legacy interface during transition.
 
 Dependencies: Stage 0, `AuthPolicy`, `ScopeService`.
 Files affected: `public/index.php`, route modules, layout/partials, dashboard controllers/views, navigation JS/CSS.
@@ -188,3 +188,6 @@ Migration: parallel test adoption; existing source checks may remain as fast str
 - No redesign/CSS implementation.
 - No sports-rule modification.
 - No claim that the current source-check tests are browser E2E.
+
+
+Implementation evidence (2026-07-27): ProductNavigationController, ProductNavigationService, dmin/product-page.php, named /admin/campeonatos/{championship}/{module} routes, and 	ests/navigation_http_e2e.php. Temporary pages render scoped persisted summaries only; Stage 2 still owns internal forms and detail workflows.

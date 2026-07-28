@@ -130,3 +130,11 @@ Every administrative page must declare the active organization, project and cham
 - Every state-changing form uses human labels, scoped selectors and server validation.
 - Success, validation error, 403, 404, empty, loading and destructive confirmation states are designed and testable.
 - Each role journey receives a browser test on desktop and mobile before its stage is checked complete.
+
+
+## Implemented routing baseline (2026-07-27)
+
+- Login now uses ProductNavigationService::landing() instead of sending every role to generic CRUD.
+- Landing: superadmin global dashboard; project admin projects; organizer championship dashboard; team manager my team; operator assigned matches; communication content; auditor accountability.
+- 	ests/navigation_http_e2e.php performs HTTP login, CSRF, regenerated cookie, role redirects, scope checks, legacy denial, 404 and subdirectory checks.
+- Browser/mobile visual acceptance remains pending Stage 7.
