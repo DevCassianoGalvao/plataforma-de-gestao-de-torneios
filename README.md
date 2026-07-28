@@ -1,5 +1,9 @@
 # Plataforma de Gestão de Torneios
 
+## UI/UX foundation
+
+Tokens, temas light/dark, componentes e shell responsivo estao documentados em `docs/UI_DESIGN_SYSTEM.md`. A identidade do portal recebe cores persistidas do campeonato somente apos validacao hexadecimal. Esta entrega e a base reutilizavel; a aplicacao visual completa das telas permanece planejada.
+
 ## URL de teste cPanel
 
 Use `APP_URL=https://www.cassianogalvao.com.br/copa-online` and `APP_BASE_PATH=/copa-online`. See `docs/CPANEL_DEPLOYMENT.md` for deployment layout.

@@ -1,5 +1,9 @@
 # Decisões Arquiteturais em Evolução
 
+## AD-021 - Design system em camadas e tema seguro
+
+O CSS visual e separado em tokens, temas, layout, componentes e fundacao, carregados apos os estilos legados durante a migracao. O portal usa somente cores hexadecimais aprovadas por `ThemeService`; nenhuma configuracao do campeonato altera markup, JavaScript ou cores textuais globais. A preferencia local do usuario prevalece sobre o tema padrao apenas no navegador.
+
 ## AD-020 - Eventos esportivos avançados persistidos
 
 Substituições, cobranças de pênalti, limpeza de cartões e autorizações excepcionais usam tabelas próprias. Gols de disputa não viram `match_events`, portanto não contaminam placar normal nem artilharia. Regras são lidas da versão ativa; não há constantes da Copa Brasil no serviço.

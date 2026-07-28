@@ -1,5 +1,11 @@
 # Changelog
 
+## Nao lancado - Sistema de design UI/UX
+
+- Adicionados tokens, tema claro/escuro, shell responsivo e componentes reutilizaveis.
+- Portal agora aplica as tres cores seguras do campeonato com fallback da plataforma.
+- Adicionado `tests/ui_foundation_e2e.php` e documentacao do sistema de design.
+
 ## 2026-07-27 - Versioned homologation snapshots
 
 - Normal homologation now writes integrity-hashed operational snapshots with active rules and PDF linkage.

@@ -1,5 +1,10 @@
 # Plano Executável do Sistema
 
+## UI/UX foundation - 27/07/2026
+
+- [x] Tokens, temas light/dark, tipografia Bricolage Grotesk/Inter, shell responsivo, componentes e personalizacao segura de cores por campeonato; verificado por `tests/ui_foundation_e2e.php`.
+- [ ] Aplicacao visual da base em todos os fluxos administrativos e paginas do portal, com validacao em navegador nos breakpoints previstos.
+
 ## Final release audit - 27/07/2026
 
 - [ ] Production release. Reopened: authenticated HTTP proof, complete assisted administration, safe rectification/PDF chain, complete sports rules, public SEO/responsive evidence and infrastructure validation. See `docs/FINAL_RELEASE_AUDIT.md`.
