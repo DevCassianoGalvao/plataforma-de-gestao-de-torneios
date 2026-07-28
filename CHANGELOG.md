@@ -1,5 +1,10 @@
 # Changelog
 
+## Nao lancado - Dashboards administrativos
+
+- Redesenhados login, painel global, navegação administrativa e resumo da central do campeonato.
+- Adicionado `tests/dashboard_ui_e2e.php`.
+
 ## Nao lancado - Sistema de design UI/UX
 
 - Adicionados tokens, tema claro/escuro, shell responsivo e componentes reutilizaveis.

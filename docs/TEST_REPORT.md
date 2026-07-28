@@ -5,6 +5,10 @@
 - `php tests/ui_foundation_e2e.php`: aprovado (`UI_FOUNDATION_E2E_OK`). Verifica tokens, tema dark, shell responsivo, componentes, foco visivel, reduced motion, carregamento modular de CSS e cores de campeonato validadas.
 - Esta verificacao e estrutural. A validacao visual em navegador de 320px a 1920px permanece pendente e nao e alegada como concluida. O smoke HTTP local tambem nao foi executado porque o executor bloqueou a inicializacao do servidor local.
 
+## Dashboard UI - 27/07/2026
+
+- `php tests/dashboard_ui_e2e.php`: aprovado (`DASHBOARD_UI_E2E_OK`). Cobre login, controles funcionais, dashboard global, central do campeonato, tema, drawer e regras responsivas presentes no HTML/CSS/JS.
+
 ## Definitive release audit - 27/07/2026
 
 - Full available regression passed: `FULL_AUDIT_REGRESSION_OK` (lint plus 13 PHP test scripts).
