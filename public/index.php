@@ -40,6 +40,7 @@ $router->get('/admin/tournaments/{id}/matches/{match}/report.pdf',fn($p)=>$opera
 $router->get('/admin/tournaments/{id}/matches/{match}/report',fn($p)=>$operation->report($p));
 $router->get('/admin', fn()=> $admin->dashboard()); foreach(['organizations','projects','tournaments','tournament_settings','tournament_themes','teams','team_tournament_entries','team_memberships','people','registrations','stages','venues','matches','match_events','match_reports','disciplinary_records','suspensions','news_posts','galleries','transfers','documents','awards'] as $entity) { $router->get('/admin/'.$entity, fn($p)=>$admin->index(['entity'=>$entity])); $router->get('/admin/'.$entity.'/{id}', fn($p)=>$admin->edit(['entity'=>$entity,'id'=>$p['id']])); $router->post('/admin/'.$entity.'/save', fn($p)=>$admin->save(['entity'=>$entity])); $router->post('/admin/'.$entity.'/delete', fn($p)=>$admin->delete(['entity'=>$entity])); }
 $router->get('/campeonatos/{slug}', fn($p)=>$public->tournament($p));
+$router->get('/sitemap.xml', fn()=> $public->sitemap());$router->get('/robots.txt', fn()=> $public->robots());
 $router->get('/campeonatos/{slug}/{page}/{id}', fn($p)=>$public->detail($p));
 $router->get('/campeonatos/{slug}/{page}', fn($p)=>$public->section($p));
 $path=parse_url($_SERVER['REQUEST_URI']??'/',PHP_URL_PATH) ?: '/';
