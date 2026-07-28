@@ -27,6 +27,7 @@ $metaDescription = $description ?? 'Gestao de campeonatos, equipes, partidas e r
   <link rel="stylesheet" href="<?= $base ?>/assets/css/components.css">
   <link rel="stylesheet" href="<?= $base ?>/assets/css/dashboard.css">
   <link rel="stylesheet" href="<?= $base ?>/assets/css/management.css">
+  <link rel="stylesheet" href="<?= $base ?>/assets/css/public-portal.css">
   <link rel="stylesheet" href="<?= $base ?>/assets/css/foundation.css">
   <link rel="stylesheet" href="<?= $base ?>/assets/css/operation.css">
 </head>
